@@ -11,8 +11,11 @@ def test_sma():
         }
     )
 
-    sma = SMA(3)
+    sma = SMA()
 
-    result = sma.calculate(df)
+    result = sma.calculate(
+        df,
+        period=3,
+    )
 
-    assert round(result.iloc[-1], 2) == 4.0
+    assert result.iloc[-1] == 4.0

@@ -13,27 +13,40 @@ class IndicatorRegistry:
 
     def __init__(self):
 
-        self._registry = {}
+        self._indicators = {}
 
     def register(
         self,
         indicator: BaseIndicator,
     ):
 
-        self._registry[indicator.name.lower()] = indicator
+        self._indicators[
+            indicator.name.upper()
+        ] = indicator
 
     def get(
         self,
         name: str,
     ) -> BaseIndicator:
 
-        key = name.lower()
+        key = name.upper()
 
-        if key not in self._registry:
-            raise ValueError(f"Indicator '{name}' not registered.")
+        if key not in self._indicators:
 
-        return self._registry[key]
+            raise LookupError(
+                f"Indicator '{name}' not registered."
+            )
 
-    def list(self):
+        return self._indicators[key]
 
-        return sorted(self._registry.keys())
+    def names(self):
+
+        return sorted(self._indicators.keys())
+
+    def clear(self):
+
+        self._indicators.clear()
+
+    def __len__(self):
+
+        return len(self._indicators)

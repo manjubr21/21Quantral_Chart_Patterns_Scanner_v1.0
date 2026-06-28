@@ -1,8 +1,6 @@
 """
 ===============================================================================
 Base Indicator
-
-Every indicator in 21Quantral inherits from this class.
 ===============================================================================
 """
 
@@ -11,10 +9,11 @@ from __future__ import annotations
 from abc import ABC
 from abc import abstractmethod
 
-import pandas as pd
-
 
 class BaseIndicator(ABC):
+    """
+    Base class implemented by every indicator.
+    """
 
     @property
     @abstractmethod
@@ -24,10 +23,7 @@ class BaseIndicator(ABC):
         """
 
     @abstractmethod
-    def calculate(
-        self,
-        data: pd.DataFrame,
-    ) -> pd.Series:
+    def calculate(self, history, **kwargs):
         """
         Calculate indicator.
         """
