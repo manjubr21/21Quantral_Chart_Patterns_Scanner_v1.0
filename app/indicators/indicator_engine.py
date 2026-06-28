@@ -8,11 +8,9 @@ from __future__ import annotations
 
 import pandas as pd
 
-from app.indicators.cache import IndicatorCache
-from app.indicators.keys import IndicatorKey
-
-from app.indicators.sma import SMA
-from app.indicators.ema import EMA
+from app.indicators.indicator_cache import IndicatorCache
+from app.indicators.indicator_keys import IndicatorKey
+from app.indicators.indicator_registry import IndicatorRegistry
 
 
 class IndicatorEngine:
@@ -20,40 +18,40 @@ class IndicatorEngine:
     def __init__(
         self,
         history: pd.DataFrame,
+        registry: IndicatorRegistry,
     ):
 
         self.history = history
-
+        self.registry = registry
         self.cache = IndicatorCache()
 
-    def sma(
+    def calculate(
         self,
-        period: int,
+        indicator: str,
+        **kwargs,
     ):
 
-        key = IndicatorKey.sma(period)
+        key = IndicatorKey.build(
+            indicator,
+            **kwargs,
+        )
 
         if self.cache.has(key):
+
             return self.cache.get(key)
 
-        value = SMA(period).calculate(self.history)
+        indicator_object = self.registry.get(
+            indicator,
+        )
 
-        self.cache.set(key, value)
+        result = indicator_object.calculate(
+            self.history,
+            **kwargs,
+        )
 
-        return value
+        self.cache.set(
+            key,
+            result,
+        )
 
-    def ema(
-        self,
-        period: int,
-    ):
-
-        key = IndicatorKey.ema(period)
-
-        if self.cache.has(key):
-            return self.cache.get(key)
-
-        value = EMA(period).calculate(self.history)
-
-        self.cache.set(key, value)
-
-        return value
+        return result
