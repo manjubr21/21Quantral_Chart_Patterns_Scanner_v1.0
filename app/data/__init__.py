@@ -1,11 +1,13 @@
-from .base_provider import BaseDataProvider
-from .interval_mapper import IntervalMapper
-from .symbol_mapper import SymbolMapper
-from .yahoo_provider import YahooProvider
+"""
+Data package.
+"""
+
+from .manager import DataManager
+from .providers.base_provider import BaseDataProvider
+from .providers.yahoo_provider import YahooProvider
 
 __all__ = [
+    "DataManager",
     "BaseDataProvider",
     "YahooProvider",
-    "IntervalMapper",
-    "SymbolMapper",
 ]
