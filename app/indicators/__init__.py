@@ -5,7 +5,7 @@
 """
 
 from .base_indicator import BaseIndicator
-from .indicator_registry import IndicatorRegistry
+from .indicator_engine import IndicatorEngine
 from .sma import SMA
 from .ema import EMA
 
