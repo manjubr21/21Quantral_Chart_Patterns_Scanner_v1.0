@@ -1,63 +1,27 @@
-"""
-===============================================================================
-Project     : 21Quantral Chart Patterns Scanner
-Module      : Simple Moving Average (SMA)
-
-Author      : Manjunatha Ramachandra
-Co-Developer: OpenAI ChatGPT
-
-Description:
-    Simple Moving Average Indicator.
-
-===============================================================================
-"""
-
 from __future__ import annotations
+
+from dataclasses import dataclass
 
 import pandas as pd
 
-from app.indicators.base_indicator import BaseIndicator
+from app.indicators.base import BaseIndicator
+from app.indicators.exceptions import IndicatorValidationError
 
 
-class SMA(BaseIndicator):
-    """
-    Simple Moving Average Indicator.
-    """
+@dataclass(frozen=True)
+class SMAIndicator(BaseIndicator):
+    period: int = 14
 
-    @property
-    def name(self) -> str:
-        return "SMA"
+    def validate(self) -> None:
+        if self.period < 1:
+            raise IndicatorValidationError("SMA period must be >= 1")
 
-    def calculate(
-        self,
-        history: pd.DataFrame,
-        period: int,
-    ) -> pd.Series:
-        """
-        Calculate Simple Moving Average.
+    def calculate(self, data: pd.DataFrame, **kwargs) -> pd.Series:
+        period = kwargs.get("period", self.period)
 
-        Parameters
-        ----------
-        history : pandas.DataFrame
-            OHLCV DataFrame containing a 'Close' column.
+        close = data["close"].astype(float)
+        return close.rolling(window=period).mean()
 
-        period : int
-            SMA period.
 
-        Returns
-        -------
-        pandas.Series
-            SMA values.
-        """
-
-        if period <= 0:
-            raise ValueError("Period must be greater than zero.")
-
-        if "Close" not in history.columns:
-            raise KeyError("Column 'Close' not found.")
-
-        return (
-            history["Close"]
-            .rolling(window=period, min_periods=period)
-            .mean()
-        )
+# backward compatibility
+SMA = SMAIndicator

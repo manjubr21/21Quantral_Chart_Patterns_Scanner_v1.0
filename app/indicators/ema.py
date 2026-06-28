@@ -1,66 +1,26 @@
-"""
-===============================================================================
-Project     : 21Quantral Chart Patterns Scanner
-Module      : Exponential Moving Average (EMA)
-
-Author      : Manjunatha Ramachandra
-Co-Developer: OpenAI ChatGPT
-
-Description:
-    Exponential Moving Average Indicator.
-
-===============================================================================
-"""
-
 from __future__ import annotations
+
+from dataclasses import dataclass
 
 import pandas as pd
 
-from app.indicators.base_indicator import BaseIndicator
+from app.indicators.base import BaseIndicator
+from app.indicators.exceptions import IndicatorValidationError
 
 
-class EMA(BaseIndicator):
-    """
-    Exponential Moving Average Indicator.
-    """
+@dataclass(frozen=True)
+class EMAIndicator(BaseIndicator):
+    period: int = 14
 
-    @property
-    def name(self) -> str:
-        return "EMA"
+    def validate(self) -> None:
+        if self.period < 1:
+            raise IndicatorValidationError("EMA period must be >= 1")
 
-    def calculate(
-        self,
-        history: pd.DataFrame,
-        period: int,
-    ) -> pd.Series:
-        """
-        Calculate Exponential Moving Average.
+    def calculate(self, data: pd.DataFrame, **kwargs) -> pd.Series:
+        period = kwargs.get("period", self.period)
 
-        Parameters
-        ----------
-        history : pandas.DataFrame
-            OHLCV DataFrame containing a 'Close' column.
+        close = data["close"].astype(float)
+        return close.ewm(span=period, adjust=False).mean()
 
-        period : int
-            EMA period.
 
-        Returns
-        -------
-        pandas.Series
-            EMA values.
-        """
-
-        if period <= 0:
-            raise ValueError("Period must be greater than zero.")
-
-        if "Close" not in history.columns:
-            raise KeyError("Column 'Close' not found.")
-
-        return (
-            history["Close"]
-            .ewm(
-                span=period,
-                adjust=False,
-            )
-            .mean()
-        )
+EMA = EMAIndicator
