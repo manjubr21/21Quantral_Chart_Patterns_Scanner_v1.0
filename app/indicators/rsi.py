@@ -11,6 +11,11 @@ from app.indicators.exceptions import IndicatorValidationError
 
 @dataclass(frozen=True)
 class RSIIndicator(BaseIndicator):
+    """
+    Relative Strength Index.
+    """
+
+    name: str = "rsi"
     period: int = 14
 
     def validate(self) -> None:
@@ -30,5 +35,9 @@ class RSIIndicator(BaseIndicator):
         avg_loss = loss.ewm(alpha=1 / period, adjust=False).mean()
 
         rs = avg_gain / avg_loss.replace(0, np.nan)
+
         return 100 - (100 / (1 + rs))
 
+
+# Backward compatibility
+RSI = RSIIndicator

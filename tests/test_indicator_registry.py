@@ -1,20 +1,25 @@
 from app.indicators.indicator_registry import IndicatorRegistry
+from app.indicators.indicator_type import IndicatorType
 
-from app.indicators.sma import SMA
-
-from app.indicators.ema import EMA
+from app.indicators.sma import SMAIndicator
+from app.indicators.ema import EMAIndicator
 
 
 def test_registry():
-
     registry = IndicatorRegistry()
 
-    registry.register(SMA())
+    registry.register(
+        IndicatorType.SMA,
+        SMAIndicator,
+    )
 
-    registry.register(EMA())
+    registry.register(
+        IndicatorType.EMA,
+        EMAIndicator,
+    )
 
     assert len(registry) == 2
 
-    assert registry.get("SMA").name == "SMA"
+    assert registry.get(IndicatorType.SMA) is SMAIndicator
 
-    assert registry.get("EMA").name == "EMA"
+    assert registry.get(IndicatorType.EMA) is EMAIndicator

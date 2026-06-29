@@ -4,10 +4,9 @@ from app.indicators.sma import SMA
 
 
 def test_sma():
-
     df = pd.DataFrame(
         {
-            "Close": [1, 2, 3, 4, 5]
+            "close": [1, 2, 3, 4, 5],
         }
     )
 

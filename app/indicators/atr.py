@@ -10,6 +10,11 @@ from app.indicators.exceptions import IndicatorValidationError
 
 @dataclass(frozen=True)
 class ATRIndicator(BaseIndicator):
+    """
+    Average True Range.
+    """
+
+    name: str = "atr"
     period: int = 14
 
     def validate(self) -> None:
@@ -25,10 +30,17 @@ class ATRIndicator(BaseIndicator):
 
         prev_close = close.shift(1)
 
-        tr = pd.concat([
-            high - low,
-            (high - prev_close).abs(),
-            (low - prev_close).abs(),
-        ], axis=1).max(axis=1)
+        tr = pd.concat(
+            [
+                high - low,
+                (high - prev_close).abs(),
+                (low - prev_close).abs(),
+            ],
+            axis=1,
+        ).max(axis=1)
 
         return tr.ewm(alpha=1 / period, adjust=False).mean()
+
+
+# Backward compatibility
+ATR = ATRIndicator

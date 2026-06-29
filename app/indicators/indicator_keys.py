@@ -20,20 +20,6 @@ class IndicatorKey:
     def build(request: IndicatorRequest) -> str:
         """
         Build a cache key from an IndicatorRequest.
-
-        Example:
-            SMA|period=20
-
-            RSI|period=14
-
-            ATR|period=14
-
-        Args:
-            request:
-                Indicator request.
-
-        Returns:
-            Cache key.
         """
 
         if not request.parameters:

@@ -26,32 +26,31 @@ class IndicatorEngine:
         self.cache = IndicatorCache()
 
     def calculate(
-        self,
-        indicator: str,
-        **kwargs,
-    ):
-
-        key = IndicatorKey.build(
+            self,
             indicator,
             **kwargs,
+    ):
+        from app.indicators.indicator_request import IndicatorRequest
+
+        request = IndicatorRequest(
+            indicator=indicator,
+            parameters=kwargs,
         )
+
+        key = IndicatorKey.build(request)
 
         if self.cache.has(key):
-
             return self.cache.get(key)
 
-        indicator_object = self.registry.get(
-            indicator,
-        )
+        indicator_class = self.registry.get(indicator)
+
+        indicator_object = indicator_class()
 
         result = indicator_object.calculate(
             self.history,
             **kwargs,
         )
 
-        self.cache.set(
-            key,
-            result,
-        )
+        self.cache.set(key, result)
 
         return result

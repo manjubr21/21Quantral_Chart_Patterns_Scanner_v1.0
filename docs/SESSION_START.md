@@ -15,6 +15,16 @@ M05.3 Complete
 Next Milestone:
 M06 – Pattern Detection Framework
 
+Current Version:
+v0.5.3
+
+Current Commit:
+417aadf
+
+Last Successful Milestone:
+M05.3 Complete RSI/ATR Production Implementation
+
+
 ---
 
 ## Completed Milestones
@@ -121,3 +131,21 @@ Read:
 Continue from the next unfinished milestone.
 
 Never restart the architecture unless explicitly requested.
+
+---
+
+## Milestone Workflow
+
+For every milestone:
+
+1. Read existing code before modifying it.
+2. Preserve backward compatibility.
+3. Implement production-ready code only.
+4. Add or update unit tests.
+5. Run pytest.
+6. Update PROJECT_STATUS.md.
+7. Update CHANGELOG.md.
+8. Commit.
+9. Push.
+
+---
