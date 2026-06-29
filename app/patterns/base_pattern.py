@@ -1,57 +1,64 @@
 """
-Base Pattern Framework
+===============================================================================
+Base Pattern
+===============================================================================
 
-All chart pattern detectors must inherit from BasePattern.
-
-Author: 21Quantral
+Abstract base class for every chart pattern detector.
 """
 
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any
 
 import pandas as pd
+
+from app.patterns.pattern_result import PatternResult
 
 
 class BasePattern(ABC):
     """
-    Abstract base class for all chart pattern detectors.
-
-    Every concrete pattern implementation must define:
-        - name
-        - calculate()
+    Base class for all chart pattern detectors.
     """
 
-    #: Unique pattern name
-    name: str = ""
+    name: str = "BASE"
 
-    #: Human-readable description
     description: str = ""
 
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(name='{self.name}')"
+    min_bars: int = 20
 
     @abstractmethod
-    def calculate(
+    def detect(
         self,
         data: pd.DataFrame,
-        **kwargs: Any,
-    ):
+    ) -> list[PatternResult]:
         """
-        Detect a chart pattern.
+        Detect pattern occurrences.
 
         Parameters
         ----------
-        data : pd.DataFrame
-            OHLCV data.
-
-        kwargs :
-            Pattern-specific parameters.
+        data
+            OHLCV DataFrame.
 
         Returns
         -------
-        PatternResult
-            Detection result.
+        list[PatternResult]
+            Detected pattern results.
         """
         raise NotImplementedError
+
+    def validate(
+        self,
+        data: pd.DataFrame,
+    ) -> bool:
+        """
+        Basic validation before detection.
+        """
+
+        return (
+            data is not None
+            and not data.empty
+            and len(data) >= self.min_bars
+        )
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}()"
